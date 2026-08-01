@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cai dat Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Cai dependencies
+        run: npm ci
+
+      - name: Kiem tra cu phap
+        run: node --check server.js
+
+      - name: Build Docker image
+        run: docker build -t study-goal-api .
