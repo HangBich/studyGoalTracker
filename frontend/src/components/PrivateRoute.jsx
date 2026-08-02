@@ -9,7 +9,7 @@ export default function PrivateRoute({ children }) {
   const { user, loading } = useAuth();
 
   // Cho kiem tra token xong roi moi quyet dinh, tranh nhay ve login roi nhay lai
-  if (loading) return <div className="center-box">Dang tai...</div>;
+  if (loading) return <div className="center-box">Loading...</div>;
 
   return user ? children : <Navigate to="/login" replace />;
 }

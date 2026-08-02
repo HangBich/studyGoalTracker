@@ -209,3 +209,5 @@ input:focus, select:focus, textarea:focus {
 @media (min-width: 1100px) {
   .goal-grid { grid-template-columns: repeat(3, 1fr); }
 }
+
+.required { color: var(--danger); }

@@ -4,21 +4,21 @@ import axiosClient from '../api/axiosClient';
 import GoalCard from '../components/GoalCard';
 
 const SUBJECTS = [
-  { value: '', label: 'Tat ca mon' },
-  { value: 'toan', label: 'Toan' },
-  { value: 'ly', label: 'Ly' },
-  { value: 'hoa', label: 'Hoa' },
-  { value: 'tin', label: 'Tin hoc' },
-  { value: 'ngoai-ngu', label: 'Ngoai ngu' },
-  { value: 'chuyen-nganh', label: 'Chuyen nganh' },
-  { value: 'khac', label: 'Khac' },
+  { value: '', label: 'All categories' },
+  { value: 'coursework', label: 'Coursework' },
+  { value: 'project', label: 'Project / Assignment' },
+  { value: 'programming', label: 'Programming skills' },
+  { value: 'language', label: 'Language' },
+  { value: 'certification', label: 'Certification' },
+  { value: 'reading', label: 'Reading' },
+  { value: 'other', label: 'Other' },
 ];
 
 const STATUSES = [
-  { value: '', label: 'Tat ca trang thai' },
-  { value: 'dang-lam', label: 'Dang lam' },
-  { value: 'hoan-thanh', label: 'Hoan thanh' },
-  { value: 'tam-dung', label: 'Tam dung' },
+  { value: '', label: 'All statuses' },
+  { value: 'dang-lam', label: 'In progress' },
+  { value: 'hoan-thanh', label: 'Completed' },
+  { value: 'tam-dung', label: 'Paused' },
 ];
 
 export default function Dashboard() {
@@ -61,24 +61,24 @@ export default function Dashboard() {
   return (
     <main className="container">
       <div className="page-head">
-        <h1>Muc tieu hoc tap</h1>
-        <Link to="/goals/new" className="btn btn-primary">+ Them muc tieu</Link>
+        <h1>Learning objectives</h1>
+        <Link to="/goals/new" className="btn btn-primary">+ Add a goal</Link>
       </div>
 
       <div className="filters">
-        <select value={subject} onChange={(e) => setSubject(e.target.value)} aria-label="Loc theo mon hoc">
+        <select value={subject} onChange={(e) => setSubject(e.target.value)} aria-label="Filter by subject">
           {SUBJECTS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
         </select>
-        <select value={status} onChange={(e) => setStatus(e.target.value)} aria-label="Loc theo trang thai">
+        <select value={status} onChange={(e) => setStatus(e.target.value)} aria-label="Filter by status">
           {STATUSES.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
         </select>
       </div>
 
       {error && <p className="alert alert-error">{error}</p>}
-      {loading && <p className="muted">Dang tai...</p>}
+      {loading && <p className="muted">Loading...</p>}
 
       {!loading && goals.length === 0 && (
-        <p className="muted">Chua co muc tieu nao. Bam "Them muc tieu" de bat dau.</p>
+        <p className="muted">No goals have been set yet. Click "Add a goal" to begin.</p>
       )}
 
       <div className="goal-grid">

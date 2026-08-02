@@ -1,12 +1,21 @@
 import { Link } from 'react-router-dom';
 
 const SUBJECT_LABEL = {
-  toan: 'Toan', ly: 'Ly', hoa: 'Hoa', tin: 'Tin hoc',
-  'ngoai-ngu': 'Ngoai ngu', 'chuyen-nganh': 'Chuyen nganh', khac: 'Khac',
+  coursework: 'Coursework',
+  project: 'Project / Assignment',
+  programming: 'Programming skills',
+  language: 'Language',
+  certification: 'Certification',
+  reading: 'Reading',
+  other: 'Other',
 };
 
 const STATUS_LABEL = {
-  'dang-lam': 'Dang lam', 'hoan-thanh': 'Hoan thanh', 'tam-dung': 'Tam dung',
+  'dang-lam': 'In progress', 'hoan-thanh': 'Completed', 'tam-dung': 'Paused',
+};
+
+const UNIT_LABEL = {
+  chuong: 'chapters', trang: 'pages', bai: 'exercises', gio: 'hours', buoi: 'sessions',
 };
 
 export default function GoalCard({ goal, onQuickAdd }) {
@@ -19,7 +28,7 @@ export default function GoalCard({ goal, onQuickAdd }) {
 
       <p className="card-meta">
         {SUBJECT_LABEL[goal.subject]}
-        {goal.deadline && ` - Han: ${new Date(goal.deadline).toLocaleDateString('vi-VN')}`}
+        {goal.deadline && ` - Deadline: ${new Date(goal.deadline).toLocaleDateString('vi-VN')}`}
       </p>
 
       {/* progress la virtual field do backend tinh, khong luu trong DB */}
@@ -29,10 +38,10 @@ export default function GoalCard({ goal, onQuickAdd }) {
 
       <div className="card-foot">
         <span className="card-numbers">
-          {goal.currentValue}/{goal.targetValue} {goal.unit} ({goal.progress}%)
+          {goal.currentValue}/{goal.targetValue} {UNIT_LABEL[goal.unit]} ({goal.progress}%)
         </span>
         <button className="btn btn-small" onClick={() => onQuickAdd(goal._id, 1)}>
-          +1 {goal.unit}
+          +1 {UNIT_LABEL[goal.unit]}
         </button>
       </div>
     </article>

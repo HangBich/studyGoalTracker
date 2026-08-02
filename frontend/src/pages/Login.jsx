@@ -28,22 +28,22 @@ export default function Login() {
   return (
     <main className="center-box">
       <form className="auth-form" onSubmit={handleSubmit}>
-        <h1>Dang nhap</h1>
+        <h1>Log in</h1>
         {error && <p className="alert alert-error">{error}</p>}
 
         <label htmlFor="email">Email</label>
         <input id="email" type="email" required value={email}
           onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
 
-        <label htmlFor="password">Mat khau</label>
+        <label htmlFor="password">Password</label>
         <input id="password" type="password" required minLength={6} value={password}
           onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" />
 
         <button className="btn btn-primary" type="submit" disabled={submitting}>
-          {submitting ? 'Dang xu ly...' : 'Dang nhap'}
+          {submitting ? 'Processing...' : 'Log in'}
         </button>
 
-        <p className="form-foot">Chua co tai khoan? <Link to="/register">Dang ky</Link></p>
+        <p className="form-foot">Don't have an account? <Link to="/register">Sign up</Link></p>
       </form>
     </main>
   );

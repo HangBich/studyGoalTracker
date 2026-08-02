@@ -5,25 +5,22 @@ const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, 'Ten khong duoc de trong'],
+      required: [true, 'Name is required'],
       trim: true,
-      maxlength: [100, 'Ten toi da 100 ky tu'],
+      maxlength: [100, 'Name must be at most 100 characters'],
     },
     email: {
       type: String,
-      required: [true, 'Email khong duoc de trong'],
+      required: [true, 'Email is required'],
       unique: true,
       lowercase: true,
       trim: true,
-      match: [/^\S+@\S+\.\S+$/, 'Email khong hop le'],
+      match: [/^\S+@\S+\.\S+$/, 'Invalid email'],
     },
     password: {
       type: String,
-      required: [true, 'Mat khau khong duoc de trong'],
-      minlength: [6, 'Mat khau toi thieu 6 ky tu'],
-      // VAN DAP: select: false = moi query mac dinh KHONG tra ve password.
-      // Muon lay phai .select('+password') thu cong (chi lam luc login).
-      // Day la phong ve chong ro ri do so y, vi du res.json(user).
+      required: [true, 'Password is required'],
+      minlength: [6, 'Password must be at least 6 characters'],
       select: false,
     },
   },

@@ -3,15 +3,12 @@ const User = require('../models/User');
 const ApiError = require('../utils/ApiError');
 const asyncHandler = require('../utils/asyncHandler');
 
-// Ky token, nhet userId vao payload.
-// Chinh cai "id" nay se duoc authMiddleware doc ra o moi request sau do.
 function signToken(userId) {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN || '7d',
   });
 }
 
-// Chi tra ve cac truong an toan, KHONG bao gio tra password
 function publicUser(user) {
   return { id: user._id, name: user.name, email: user.email };
 }
@@ -21,7 +18,7 @@ exports.register = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
 
   const existed = await User.findOne({ email });
-  if (existed) throw new ApiError(409, 'Email da duoc su dung');
+  if (existed) throw new ApiError(409, 'Email is already in use');
 
   // Password duoc hash tu dong boi hook pre('save') trong model
   const user = await User.create({ name, email, password });
@@ -43,7 +40,7 @@ exports.login = asyncHandler(async (req, res) => {
   // Bao loi CHUNG CHUNG, khong noi ro sai email hay sai mat khau.
   // Neu noi ro, ke tan cong co the do xem email nao ton tai (user enumeration).
   if (!user || !(await user.comparePassword(password))) {
-    throw new ApiError(401, 'Email hoac mat khau khong dung');
+    throw new ApiError(401, 'Incorrect email or password');
   }
 
   res.status(200).json({

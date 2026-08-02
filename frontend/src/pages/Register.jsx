@@ -30,24 +30,24 @@ export default function Register() {
   return (
     <main className="center-box">
       <form className="auth-form" onSubmit={handleSubmit}>
-        <h1>Dang ky</h1>
+        <h1>Sign up</h1>
         {error && <p className="alert alert-error">{error}</p>}
 
-        <label htmlFor="name">Ho ten</label>
+        <label htmlFor="name">Name</label>
         <input id="name" name="name" required value={form.name} onChange={handleChange} />
 
         <label htmlFor="email">Email</label>
         <input id="email" name="email" type="email" required value={form.email} onChange={handleChange} />
 
-        <label htmlFor="password">Mat khau (toi thieu 6 ky tu)</label>
+        <label htmlFor="password">Password (minimum 6 characters)</label>
         <input id="password" name="password" type="password" required minLength={6}
           value={form.password} onChange={handleChange} />
 
         <button className="btn btn-primary" type="submit" disabled={submitting}>
-          {submitting ? 'Dang xu ly...' : 'Dang ky'}
+          {submitting ? 'Processing...' : 'Register'}
         </button>
 
-        <p className="form-foot">Da co tai khoan? <Link to="/login">Dang nhap</Link></p>
+        <p className="form-foot">Already have an account? <Link to="/login">Log in</Link></p>
       </form>
     </main>
   );

@@ -23,7 +23,7 @@ axiosClient.interceptors.response.use(
       if (window.location.pathname !== '/login') window.location.href = '/login';
     }
     // Lay message that tu backend (do errorHandler tra ve), khong hien loi ky thuat
-    const message = error.response?.data?.message || 'Khong ket noi duoc may chu';
+    const message = error.response?.data?.message || 'Cannot connect to the server';
     return Promise.reject(new Error(message));
   }
 );

@@ -1,15 +1,15 @@
 const mongoose = require('mongoose');
 
-// Danh sach mon hoc - dung lam truong LOC theo yeu cau de bai
-const SUBJECTS = ['toan', 'ly', 'hoa', 'tin', 'ngoai-ngu', 'chuyen-nganh', 'khac'];
+// Category list - used as the filter field required by the assignment
+const SUBJECTS = ['coursework', 'project', 'programming', 'language', 'certification', 'reading', 'other'];
 const UNITS = ['chuong', 'trang', 'bai', 'gio', 'buoi'];
 const STATUSES = ['dang-lam', 'hoan-thanh', 'tam-dung'];
 
 const goalSchema = new mongoose.Schema(
   {
-    // Khoa ngoai tro toi User. VAN DAP: dung reference thay vi embed vi
-    // so goal cua 1 user tang khong gioi han (document MongoDB gioi han 16MB),
-    // va can query/loc goal doc lap voi user.
+    // Foreign key referencing User. ORAL EXAM: reference instead of embedding
+    // because the number of goals per user is unbounded (MongoDB caps a
+    // document at 16MB), and goals must be queried/filtered independently.
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -18,63 +18,63 @@ const goalSchema = new mongoose.Schema(
     },
     title: {
       type: String,
-      required: [true, 'Ten muc tieu khong duoc de trong'],
+      required: [true, 'Goal title is required'],
       trim: true,
-      maxlength: [200, 'Ten muc tieu toi da 200 ky tu'],
+      maxlength: [200, 'Goal title must be at most 200 characters'],
     },
     description: {
       type: String,
       default: '',
-      maxlength: [1000, 'Mo ta toi da 1000 ky tu'],
+      maxlength: [1000, 'Description must be at most 1000 characters'],
     },
-    // enum = lop validate o tang schema (lop trong cung trong 3 lop validate)
+    // enum = validation at the schema layer (innermost of the 3 layers)
     subject: {
       type: String,
       required: true,
-      enum: { values: SUBJECTS, message: 'Mon hoc khong hop le' },
-      default: 'khac',
+      enum: { values: SUBJECTS, message: 'Invalid category' },
+      default: 'other',
     },
     unit: {
       type: String,
       required: true,
-      enum: { values: UNITS, message: 'Don vi khong hop le' },
+      enum: { values: UNITS, message: 'Invalid unit' },
       default: 'bai',
     },
     targetValue: {
       type: Number,
-      required: [true, 'Muc tieu khong duoc de trong'],
-      min: [1, 'Muc tieu phai lon hon 0'],
+      required: [true, 'Target value is required'],
+      min: [1, 'Target must be greater than 0'],
     },
     currentValue: {
       type: Number,
       default: 0,
-      min: [0, 'Tien do khong duoc am'],
+      min: [0, 'Progress cannot be negative'],
     },
     status: {
       type: String,
-      enum: { values: STATUSES, message: 'Trang thai khong hop le' },
+      enum: { values: STATUSES, message: 'Invalid status' },
       default: 'dang-lam',
     },
     deadline: { type: Date },
   },
   {
     timestamps: true,
-    // Bat virtual field khi chuyen sang JSON de frontend nhan duoc "progress"
+    // Expose virtual fields in JSON so the frontend receives "progress"
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
   }
 );
 
-// VAN DAP: progress KHONG luu trong DB, tinh khi can.
-// Luu no xuong DB tao ra HAI nguon su that -> sua currentValue ma quen
-// cap nhat progress la du lieu sai ngay. Du lieu suy ra duoc thi khong luu.
+// ORAL EXAM: progress is NOT stored in the DB, it is derived on read.
+// Storing it would create TWO sources of truth -> updating currentValue
+// without updating progress would silently corrupt the data.
 goalSchema.virtual('progress').get(function () {
   if (!this.targetValue) return 0;
   return Math.min(100, Math.round((this.currentValue / this.targetValue) * 100));
 });
 
-// Index ghep phuc vu dung cau query hay dung nhat:
-// "lay goal cua toi, sap xep theo han"
+// Compound index serving the most frequent query:
+// "get my goals, sorted by deadline"
 goalSchema.index({ userId: 1, deadline: 1 });
 
 module.exports = mongoose.model('Goal', goalSchema);

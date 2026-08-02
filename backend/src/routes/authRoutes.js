@@ -9,9 +9,9 @@ const router = express.Router();
 router.post(
   '/register',
   [
-    body('name').trim().notEmpty().withMessage('Ten khong duoc de trong'),
-    body('email').isEmail().withMessage('Email khong hop le').normalizeEmail(),
-    body('password').isLength({ min: 6 }).withMessage('Mat khau toi thieu 6 ky tu'),
+    body('name').trim().notEmpty().withMessage('Name is required'),
+    body('email').isEmail().withMessage('Invalid email').normalizeEmail(),
+    body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
   ],
   validate,
   register
@@ -20,8 +20,8 @@ router.post(
 router.post(
   '/login',
   [
-    body('email').isEmail().withMessage('Email khong hop le').normalizeEmail(),
-    body('password').notEmpty().withMessage('Mat khau khong duoc de trong'),
+    body('email').isEmail().withMessage('Invalid email').normalizeEmail(),
+    body('password').notEmpty().withMessage('Password is required'),
   ],
   validate,
   login

@@ -22,7 +22,7 @@ exports.getGoal = asyncHandler(async (req, res) => {
   // QUAN TRONG: tim theo CA _id VA userId trong cung mot query.
   // KHONG dung findById roi moi so sanh chu so huu sau -> de quen nhanh nao do.
   const goal = await Goal.findOne({ _id: req.params.id, userId: req.user._id });
-  if (!goal) throw new ApiError(404, 'Khong tim thay muc tieu');
+  if (!goal) throw new ApiError(404, 'Goal not found');
 
   res.status(200).json({ success: true, data: goal });
 });
@@ -50,7 +50,7 @@ exports.updateGoal = asyncHandler(async (req, res) => {
   const { title, description, subject, unit, targetValue, currentValue, status, deadline } = req.body;
 
   const goal = await Goal.findOne({ _id: req.params.id, userId: req.user._id });
-  if (!goal) throw new ApiError(404, 'Khong tim thay muc tieu');
+  if (!goal) throw new ApiError(404, 'Goal not found');
 
   goal.title = title;
   goal.description = description || '';
@@ -76,11 +76,11 @@ exports.updateProgress = asyncHandler(async (req, res) => {
   const step = Number(delta);
 
   if (!Number.isFinite(step) || step === 0) {
-    throw new ApiError(400, 'delta phai la so khac 0');
+    throw new ApiError(400, 'delta must be a non-zero number');
   }
 
   const goal = await Goal.findOne({ _id: req.params.id, userId: req.user._id });
-  if (!goal) throw new ApiError(404, 'Khong tim thay muc tieu');
+  if (!goal) throw new ApiError(404, 'Goal not found');
 
   // Kep gia tri trong khoang [0, targetValue]
   goal.currentValue = Math.max(0, Math.min(goal.targetValue, goal.currentValue + step));
@@ -93,7 +93,7 @@ exports.updateProgress = asyncHandler(async (req, res) => {
 // DELETE /api/goals/:id -> 204 No Content (khong kem body)
 exports.deleteGoal = asyncHandler(async (req, res) => {
   const goal = await Goal.findOneAndDelete({ _id: req.params.id, userId: req.user._id });
-  if (!goal) throw new ApiError(404, 'Khong tim thay muc tieu');
+  if (!goal) throw new ApiError(404, 'Goal not found');
 
   res.status(204).send();
 });

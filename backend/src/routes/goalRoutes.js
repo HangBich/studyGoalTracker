@@ -14,18 +14,25 @@ const {
 
 const router = express.Router();
 
-// Ap dung protect cho TAT CA route ben duoi.
-// Mot dong nay dam bao khong the quen bao ve mot endpoint nao.
+// Apply protect to ALL routes declared below this line.
+// This single line guarantees no endpoint can be left unprotected by mistake.
 router.use(protect);
 
 const goalValidation = [
-  body('title').trim().notEmpty().withMessage('Ten muc tieu khong duoc de trong')
-    .isLength({ max: 200 }).withMessage('Ten muc tieu toi da 200 ky tu'),
-  body('subject').isIn(Goal.SUBJECTS).withMessage('Mon hoc khong hop le'),
-  body('unit').isIn(Goal.UNITS).withMessage('Don vi khong hop le'),
-  body('targetValue').isInt({ min: 1 }).withMessage('Muc tieu phai la so nguyen lon hon 0'),
+  body('title').trim().notEmpty().withMessage('Goal title is required')
+    .isLength({ max: 200 }).withMessage('Goal title must be at most 200 characters'),
+  body('subject').isIn(Goal.SUBJECTS).withMessage('Invalid category'),
+  body('unit').isIn(Goal.UNITS).withMessage('Invalid unit'),
+  body('targetValue').isInt({ min: 1 }).withMessage('Target must be an integer greater than 0'),
   body('deadline').optional({ nullable: true, checkFalsy: true })
-    .isISO8601().withMessage('Han hoan thanh khong hop le'),
+  .isISO8601().withMessage('Invalid deadline')
+  .custom((value) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (new Date(value) < today) throw new Error('Deadline cannot be in the past');
+    return true;
+  })
+    .isISO8601().withMessage('Invalid deadline'),
 ];
 
 router.route('/')
