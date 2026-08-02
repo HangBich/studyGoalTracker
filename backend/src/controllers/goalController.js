@@ -31,15 +31,22 @@ exports.getGoal = asyncHandler(async (req, res) => {
 exports.createGoal = asyncHandler(async (req, res) => {
   const { title, description, subject, unit, targetValue, currentValue, deadline } = req.body;
 
-  const goal = await Goal.create({
-    userId: req.user._id, // gan chu so huu tu token, KHONG lay tu body
-    title,
-    description,
-    subject,
-    unit,
-    targetValue,
-    currentValue: currentValue || 0,
-    deadline,
+  // Kep currentValue trong khoang hop le, khong cho vuot qua target
+const target = Number(targetValue);
+let current = Number(currentValue) || 0;
+current = Math.max(0, Math.min(target, current));
+
+const goal = await Goal.create({
+  userId: req.user._id,
+  title,
+  description,
+  subject,
+  unit,
+  targetValue: target,
+  currentValue: current,
+  // Ap dung cung mot quy tac nhu updateGoal va updateProgress
+  status: current >= target ? 'hoan-thanh' : 'dang-lam',
+  deadline,
   });
 
   res.status(201).json({ success: true, data: goal });
