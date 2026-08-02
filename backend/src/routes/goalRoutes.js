@@ -25,7 +25,7 @@ const goalValidation = [
   body('unit').isIn(Goal.UNITS).withMessage('Invalid unit'),
   body('targetValue').isInt({ min: 1 }).withMessage('Target must be an integer greater than 0'),
   body('deadline').optional({ nullable: true, checkFalsy: true })
-  .isISO8601().withMessage('Invalid deadline')
+  .isISO8601().withMessage('Invalid deadline').bail()
   .custom((value) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
