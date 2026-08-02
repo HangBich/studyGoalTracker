@@ -64,7 +64,10 @@ exports.updateGoal = asyncHandler(async (req, res) => {
   goal.subject = subject;
   goal.unit = unit;
   goal.targetValue = targetValue;
-  if (currentValue !== undefined) goal.currentValue = currentValue;
+  if (currentValue !== undefined) {
+  // Kep trong khoang [0, targetValue] - giong createGoal va updateProgress
+  goal.currentValue = Math.max(0, Math.min(goal.targetValue, Number(currentValue)));
+  }
   if (status) goal.status = status;
   goal.deadline = deadline;
 
